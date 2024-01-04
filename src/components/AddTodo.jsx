@@ -1,9 +1,18 @@
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddTodo = ({ todo, handleChange, handleAdd }) => {
+const AddTodo = ({
+  todo,
+  handleChange,
+  handleAdd,
+  
+}) => {
+
+  
   return (
     <TextField
+      sx={{ fontFamily: "cursive", textAlign: "center" }}
       name="todo"
       onKeyDown={(event) => {
         if (event.key === "Enter") {
@@ -17,7 +26,14 @@ const AddTodo = ({ todo, handleChange, handleAdd }) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton onClick={handleAdd}>
+            <IconButton
+              onClick={() => {
+                if (todo.trim() !== "") {
+                  handleAdd(); 
+                } 
+              }}
+              disabled={!todo.trim()}
+            >
               <AddIcon />
             </IconButton>
           </InputAdornment>

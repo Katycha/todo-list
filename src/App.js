@@ -3,6 +3,7 @@ import AddTodo from "./components/AddTodo";
 import Todos from "./components/Todos";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Toaster, toast } from "sonner";
 
 function App() {
   const [todo, setTodo] = useState("");
@@ -15,17 +16,23 @@ function App() {
   };
 
   const handleAdd = () => {
-    setTodos((prevState) => {
-      const newTodo = {
-        name: todo,
-        id: uuidv4(),
-        isDone: false,
-      };
+    if (todo.trim() === ""){
+      toast.warning("You can't add an empty todo-list");
+    } else{
+      toast.info("Successfully added")
+      setTodos((prevState) => {
+        const newTodo = {
+          name: todo,
+          id: uuidv4(),
+          isDone: false,
+        };
 
-      return [newTodo, ...prevState];
-    });
+        return [newTodo, ...prevState];
+      });
 
-    setTodo("");
+      setTodo("");
+    }
+    
   };
 
   const handleChangeDone = (event, id) => {
@@ -38,6 +45,11 @@ function App() {
     };
 
     setTodos([...filterTodos, newTodo]);
+    if(event.target.checked === true ){
+      toast.success("Great job!")
+    } else{
+      toast.warning("Task is not done!")
+    }
   };
 
   return (
@@ -47,6 +59,10 @@ function App() {
         flexDirection: "column",
         height: "100vh",
         rowGap: "20px",
+        backgroundImage: `url("https://wallpapers-clan.com/wp-content/uploads/2023/11/aesthetic-pastel-clouds-desktop-wallpaper-preview.jpg")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -57,7 +73,16 @@ function App() {
         />
       </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+          fontFamily: "cursive",
+          textAlign: "center",
+          borderRadius: "20%",
+          background: "blur",
+        }}
+      >
         <Todos
           title="Todos"
           todos={todos.filter((item) => item.isDone === false)}
@@ -69,6 +94,7 @@ function App() {
           todos={todos.filter((item) => item.isDone === true)}
         />
       </Box>
+      <Toaster richColors/>
     </Box>
   );
 }
