@@ -4,27 +4,44 @@ import Todos from "./components/Todos";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Toaster, toast } from "sonner";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
-  console.log("todo: ", todo);
-  console.log("todos: ", todos);
+  const [date, setDate] = useState(null);
 
   const handleChange = (event) => {
     setTodo(event.target.value);
   };
+  const handleDateChange = (newValue) => {
+    setDate(newValue);
+  };
+
+  const handleRateChange = (value, id) => {
+    const filterTodos = todos.filter((item) => item.id !== id);
+    const foundTodo = todos.find((item) => item.id === id);
+
+    const newTodo = {
+      ...foundTodo,
+      rate: value,
+    };
+    setTodos([newTodo, ...filterTodos]);
+  };
 
   const handleAdd = () => {
-    if (todo.trim() === ""){
+    if (todo.trim() === "") {
       toast.warning("You can't add an empty todo-list");
-    } else{
-      toast.info("Successfully added")
+    } else {
+      toast.info("Successfully added");
       setTodos((prevState) => {
         const newTodo = {
           name: todo,
           id: uuidv4(),
           isDone: false,
+          deadLine: date,
+          rate: 1,
         };
 
         return [newTodo, ...prevState];
@@ -32,7 +49,6 @@ function App() {
 
       setTodo("");
     }
-    
   };
 
   const handleChangeDone = (event, id) => {
@@ -45,57 +61,64 @@ function App() {
     };
 
     setTodos([...filterTodos, newTodo]);
-    if(event.target.checked === true ){
-      toast.success("Great job!")
-    } else{
-      toast.warning("Task is not done!")
+    if (event.target.checked === true) {
+      toast.success("Great job!");
+    } else {
+      toast.warning("Task is not done!");
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        rowGap: "20px",
-        backgroundImage: `url("https://wallpapers-clan.com/wp-content/uploads/2023/11/aesthetic-pastel-clouds-desktop-wallpaper-preview.jpg")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <AddTodo
-          todo={todo}
-          handleChange={handleChange}
-          handleAdd={handleAdd}
-        />
-      </Box>
-
+    <LocalizationProvider dateAdapter={AdapterMoment}>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-around",
-          fontFamily: "cursive",
-          textAlign: "center",
-          borderRadius: "20%",
-          background: "blur",
+          flexDirection: "column",
+          height: "100vh",
+          rowGap: "20px",
+          backgroundImage: `url("https://wallpapers-clan.com/wp-content/uploads/2023/11/aesthetic-pastel-clouds-desktop-wallpaper-preview.jpg")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       >
-        <Todos
-          title="Todos"
-          todos={todos.filter((item) => item.isDone === false)}
-          handleChange={handleChangeDone}
-        />
-        <Todos
-          handleChange={handleChangeDone}
-          title="Done Todos"
-          todos={todos.filter((item) => item.isDone === true)}
-        />
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <AddTodo
+            todo={todo}
+            handleChange={handleChange}
+            handleAdd={handleAdd}
+            date={date}
+            handleDateChange={handleDateChange}
+            handleRateChange={handleRateChange}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            fontFamily: "cursive",
+            textAlign: "center",
+            borderRadius: "20%",
+            background: "blur",
+          }}
+        >
+          <Todos
+            title="Todos"
+            todos={todos.filter((item) => item.isDone === false)}
+            handleChange={handleChangeDone}
+            handleRateChange={handleRateChange}
+          />
+          <Todos
+            handleChange={handleChangeDone}
+            title="Done Todos"
+            todos={todos.filter((item) => item.isDone === true)}
+            handleRateChange={handleRateChange}
+          />
+        </Box>
+        <Toaster richColors />
       </Box>
-      <Toaster richColors/>
-    </Box>
+    </LocalizationProvider>
   );
 }
 

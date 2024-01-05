@@ -4,26 +4,86 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
+  Slider,
+  Divider,
+  Typography,
 } from "@mui/material";
+import moment from "moment";
+import "moment/locale/ru";
 
-const Todos = ({ todos, title, handleChange }) => {
+const Todos = ({ todos, title, handleChange, handleRateChange }) => {
+  const moods = [
+    {
+      label: "😔",
+      value: 0,
+    },
+    {
+      label: "🙂",
+      value: 1,
+    },
+    {
+      label: "😊",
+      value: 2,
+    },
+  ];
+
   return (
-    <List
-      sx={{ border: "1px solid grey", minWidth: "300px" }}
-      subheader={title}
-    >
-      {todos.map((item) => (
-        <ListItem key={item.id}>
-          <ListItemText primary={item.name} />
-          <ListItemSecondaryAction>
-            <Checkbox
-              checked={item.isDone}
-              onChange={(event) => handleChange(event, item.id)}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
-      ))}
-    </List>
+      <List
+        sx={{ border: "1px solid grey", minWidth: "300px", padding: "20px" }}
+        subheader={<Typography variant="h5">{title}</Typography>}
+      >
+        {todos
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((item) => {
+            const date = moment(item.deadLine).valueOf();
+            const currentDate = new Date().valueOf();
+            return (
+              <>
+                <ListItem key={item.id}>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={
+                      <Typography
+                        sx={{
+                          color: currentDate > date ? "red" : "black",
+                        }}
+                      >
+                        {moment(item.deadLine).locale("ru").format("LLL")}
+                      </Typography>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <Checkbox
+                      disabled={currentDate > date}
+                      checked={item.isDone}
+                      onChange={(event) => handleChange(event, item.id)}
+                    />
+                  </ListItemSecondaryAction>
+                </ListItem>
+
+                <Slider
+                  disabled={item.isDone}
+                  value={item.rate}
+                  onChange={(event, value) =>
+                    handleRateChange(event.target.value, item.id)
+                  }
+                  marks={moods}
+                  min={0}
+                  max={2}
+                  componentsProps={{
+                    markLabel: {
+                      style: {
+                        fontSize: "25px",
+                      },
+                    },
+                  }}
+                />
+                <Divider component="li" />
+              </>
+            );
+          })}
+      </List>
+    
   );
 };
 

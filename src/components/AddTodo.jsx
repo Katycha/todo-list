@@ -1,45 +1,29 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import {  TextField, Box, Button } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
-
+import {DateTimePicker} from "@mui/x-date-pickers" ;
 const AddTodo = ({
   todo,
+  date, 
   handleChange,
+  handleDateChange,
   handleAdd,
   
 }) => {
 
   
   return (
-    <TextField
-      sx={{ fontFamily: "cursive", textAlign: "center" }}
-      name="todo"
-      onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          handleAdd();
-        }
-      }}
-      label="Задача"
-      placeholder="Введите задачу"
-      value={todo}
-      onChange={handleChange}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={() => {
-                if (todo.trim() !== "") {
-                  handleAdd(); 
-                } 
-              }}
-              disabled={!todo.trim()}
-            >
-              <AddIcon />
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    />
+    <Box sx={{display: "flex", flexDirection: "column", rowGap: "10px"}}>
+      <TextField
+        sx={{ fontFamily: "cursive", textAlign: "center" }}
+        name="todo"
+        label="Задача"
+        placeholder="Введите задачу"
+        value={todo}
+        onChange={handleChange}
+      />
+      <DateTimePicker value={date} onChange={handleDateChange} disablePast={true}/>
+      <Button variant="contained" onClick={handleAdd}>Добавить задачу</Button>
+    </Box>
   );
 };
 
