@@ -11,7 +11,7 @@ import {
 import moment from "moment";
 import "moment/locale/ru";
 
-const Todos = ({ todos, title, handleChange, handleRateChange }) => {
+const Todos = ({ todos, title, handleChange, handleRateChange, }) => {
   const moods = [
     {
       label: "😔",
@@ -45,13 +45,16 @@ const Todos = ({ todos, title, handleChange, handleRateChange }) => {
                     secondary={
                       <Typography
                         sx={{
-                          color: currentDate > date ? "red" : "black",
+                          color: currentDate > date ? "red" : "grey",
                         }}
                       >
                         {moment(item.deadLine).locale("ru").format("LLL")}
+                        <br />
+                        {item.category}
                       </Typography>
                     }
                   />
+
                   <ListItemSecondaryAction>
                     <Checkbox
                       disabled={currentDate > date}

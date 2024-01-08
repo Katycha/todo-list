@@ -11,6 +11,7 @@ function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [date, setDate] = useState(null);
+  const [category, setCategory] = useState("");
 
   const handleChange = (event) => {
     setTodo(event.target.value);
@@ -42,12 +43,15 @@ function App() {
           isDone: false,
           deadLine: date,
           rate: 1,
+          category: category,
         };
 
         return [newTodo, ...prevState];
       });
 
       setTodo("");
+      setCategory("");
+      setDate(null);
     }
   };
 
@@ -66,6 +70,10 @@ function App() {
     } else {
       toast.warning("Task is not done!");
     }
+  };
+
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
   };
 
   return (
@@ -90,6 +98,8 @@ function App() {
             date={date}
             handleDateChange={handleDateChange}
             handleRateChange={handleRateChange}
+            category={category}
+            handleCategoryChange={handleCategoryChange}
           />
         </Box>
 
@@ -97,19 +107,21 @@ function App() {
           sx={{
             display: "flex",
             justifyContent: "space-around",
-            fontFamily: "cursive",
+            fontFamily: "Courier New",
             textAlign: "center",
             borderRadius: "20%",
-            background: "blur",
+            backdropFilter: "blur(5px)",
           }}
         >
           <Todos
+            sx={{ backdropFilter: "blur(5px)", fontFamily: "cursive" }}
             title="Todos"
             todos={todos.filter((item) => item.isDone === false)}
             handleChange={handleChangeDone}
             handleRateChange={handleRateChange}
           />
           <Todos
+            sx={{ backdropFilter: "blur(5px)", fontFamily: "cursive" }}
             handleChange={handleChangeDone}
             title="Done Todos"
             todos={todos.filter((item) => item.isDone === true)}
