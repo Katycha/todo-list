@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Toaster, toast } from "sonner";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { useEffect } from "react";
 
 function App() {
   const [todo, setTodo] = useState("");
@@ -71,6 +72,15 @@ function App() {
       toast.warning("Task is not done!");
     }
   };
+
+  useEffect(() => {
+    if (todos.length !== 0) {
+      localStorage.setItem("__todoList", JSON.stringify(todos));
+    } else {
+      const todosInLS = JSON.parse(localStorage.getItem("__todoList"));
+      setTodos(todosInLS || []);
+    }
+  }, [todos]);
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
